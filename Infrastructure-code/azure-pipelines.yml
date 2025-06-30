@@ -1,0 +1,41 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+   paths:
+     include:
+       - agentVM
+ 
+
+pool:
+  name: default
+
+steps:
+
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'storage-azure-service-connection'
+    backendAzureRmStorageAccountName: 'tfstate6475'
+    backendAzureRmContainerName: 'statefiles'
+    backendAzureRmKey: 'vm-tfstate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/agentVM'
+  
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/agentVM'
+    commandOptions: '-out tfplan'
+    environmentServiceNameAzureRM: 'storage-azure-service-connection'
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/agentVM'
+    commandOptions: '-auto-approve'
+    environmentServiceNameAzureRM: 'storage-azure-service-connection'

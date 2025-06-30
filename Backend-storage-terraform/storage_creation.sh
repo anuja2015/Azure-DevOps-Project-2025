@@ -4,9 +4,6 @@ set -x
 
 ## Set variables ##
 
-RESOURCE_GROUP="tfstate-RG"
-LOCATION="canadacentral"
-BLOB_CONTAINER_NAME="statefiles"
 
 ## Get a random name for storage account ##
 
@@ -15,27 +12,23 @@ STORAGEACCOUNT_NAME="tfstate${RANDOM_ID}"
 
 ## Authenticating with Azure ##
 
-az login
+#az login
 
-SUBSCRIPTION_ID=$(az account show --query id --output tsv)
-SERVICE_PRINCIPAL="tf-backend-sp"
+#SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+#SERVICE_PRINCIPAL="tf-backend-sp"
 #az account set --subscription $SUBSCRIPTION_ID
 
 ## Create serviceprincipal ##
 
-az ad sp create-for-rbac --name="$SERVICE_PRINCIPAL" --role="Contributor" --scopes="subscriptions/$SUBSCRIPTION_ID" > sp.txt
+#az ad sp create-for-rbac --name="$SERVICE_PRINCIPAL" --role="Contributor" --scopes="subscriptions/$SUBSCRIPTION_ID" > sp.txt
 
 ## Extract secret values ##
 
-APP_ID=$(grep appId sp.txt | cut -d: -f2 | tr -d ' " ' | tr -d ',')
-CLIENT_SECRET=$(grep password sp.txt | cut -d: -f2 | tr -d ' " ' | tr -d ',')
-TENANT_ID=$(grep tenant sp.txt | cut -d: -f2 | tr -d ' " ' | tr -d ',')
+#APP_ID=$(grep appId sp.txt | cut -d: -f2 | tr -d ' " ' | tr -d ',')
+#CLIENT_SECRET=$(grep password sp.txt | cut -d: -f2 | tr -d ' " ' | tr -d ',')
+#TENANT_ID=$(az account show --query tenantId --output tsv)
 
-az account set --subscription $SUBSCRIPTION_ID
-
-az role assignment create --assignee $APP_ID --role "Contributor" --scope subscriptions/$SUBSCRIPTION_ID
-
-az login --service-principal --username $APP_ID --password $CLIENT_SECRET --tenant $TENANT_ID
+#az account set --subscription $SUBSCRIPTION_ID
 
 
 echo " Creating the resource group for storage account : $RESOURCE_GROUP"
@@ -64,3 +57,5 @@ else
   echo "Storage account creation failed. Exiting."
   exit 1
 fi
+
+

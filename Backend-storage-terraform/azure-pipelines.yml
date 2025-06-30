@@ -1,0 +1,21 @@
+
+
+trigger:
+ paths:
+   exclude:
+     - Storageaccount
+
+variables:
+   - group: storageaccount
+pool:
+ name: default
+
+steps:
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: '2025devopsmission (4aa5473b-2cf5-4bb8-8db8-b7cf3501bd69)'
+      scriptType: 'bash'
+      scriptLocation: 'scriptPath'
+      scriptPath: 'storage_creation.sh'
+  
+
